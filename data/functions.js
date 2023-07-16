@@ -4508,9 +4508,42 @@ function checkSkill(skillName, num) {
 		enemy_def = Math.max(0,enemy_def + enemy_def*(c.enemy_defense+c.target_defense)/100+c.enemy_defense_flat)
 		var hit_chance = Math.round(Math.max(5,Math.min(95,(100 * outcome.ar / (outcome.ar + enemy_def)) * (2 * c.level / (c.level + enemy_lvl)))));
 		
-		var output = ": " + outcome.min + "-" + outcome.max + " {"+Math.ceil((outcome.min+outcome.max)/2)+"}";
-		if (~~outcome.min != 0 && ~~outcome.max != 0) { document.getElementById("skill"+num+"_info").innerHTML = output } else { document.getElementById("skill"+num+"_info").innerHTML = ":" }
-		if (outcome.ar != 0) { document.getElementById("ar_skill"+num).innerHTML = "AR: " + outcome.ar + " ("+hit_chance+"%)" } else { document.getElementById("ar_skill"+num).innerHTML = "" }
+		var output = ": " + outcome.min + "-" + outcome.max + " {"+Math.ceil((outcome.min+outcome.max)/2)+"}";		
+		
+		//TODO2: It's copypasta {sadtrombone}
+		var ias = c.ias + Math.floor(dexTotal/8)*c.ias_per_8_dexterity;
+		if (offhandType == "weapon" && typeof(equipped.offhand.ias) != 'undefined') { ias -= equipped.offhand.ias }
+		var ias_total = ias + c.ias_skill;
+		var weaponType = equipped.weapon.type;
+		var eIAS = Math.floor(120*ias/(120+ias));
+		var weaponFrames = 0;
+		var weaponSpeedModifier = c.baseSpeed - ~~equipped.offhand.baseSpeed;
+		var anim_speed = 256;
+		if (weaponType != "") {			
+			if (weaponType == "club" || weaponType == "hammer") { weaponType = "mace" }
+			weaponFrames = c.weapon_frames[weaponType];
+			if (typeof(effects["Werewolf"]) != 'undefined') { if (effects["Werewolf"].info.enabled == 1) { weaponFrames = character_all.druid.wereform_frames[weaponType]; anim_speed = 256; } }
+			if (typeof(effects["Werebear"]) != 'undefined') { if (effects["Werebear"].info.enabled == 1) { weaponFrames = character_all.druid.wereform_frames[weaponType]; anim_speed = 224; } }
+			if (weaponType == "sword" || weaponType == "axe" || weaponType == "mace") { if (equipped.weapon.twoHanded == 1) { weaponFrames = weaponFrames[1]; } else { weaponFrames = weaponFrames[0]; } }
+			if (weaponType == "thrown") { if (equipped.weapon.subtype == "dagger") { weaponFrames = weaponFrames[1]; } else { weaponFrames = weaponFrames[0]; } }
+			if (weaponType == "claw") { anim_speed = 208 }	// can't interact with werewolf/werebear frames due to itemization
+		}
+		weaponFrames += 1
+		var combined_ias = Math.min(175,Math.max(15,(100 + c.ias_skill + eIAS - weaponSpeedModifier)));
+		var frames_per_attack = Math.ceil((weaponFrames*256)/Math.floor(anim_speed * combined_ias / 100)) - 1;
+		if (weaponType == "claw") {
+			var frames_per_attack_alternate = Math.ceil(((weaponFrames+1)*256)/Math.floor(anim_speed * combined_ias / 100)) - 1;
+			frames_per_attack = (frames_per_attack + frames_per_attack_alternate) / 2
+		}
+
+		var output2 = ": " + Math.ceil((Math.ceil((outcome.min+outcome.max)/2))*(30.0/frames_per_attack)) + " dps" ; // We're gonna calculate DPS and add it here.
+		document.getElementById("skill1_dps").innerHTML = output2;
+
+
+		if (~~outcome.min != 0 && ~~outcome.max != 0) { document.getElementById("skill"+num+"_info").innerHTML = output } 
+		else { document.getElementById("skill"+num+"_info").innerHTML = ":" }
+		if (outcome.ar != 0) { document.getElementById("ar_skill"+num).innerHTML = "AR: " + outcome.ar + " ("+hit_chance+"%)" } 
+		else { document.getElementById("ar_skill"+num).innerHTML = "" }
 	}
 	if (offhandType == "weapon" && (skillName == "Dual Strike" || skillName == "Double Swing" || skillName == "Frenzy" || skillName == "Whirlwind") && equipped.weapon.name != "none") {
 		document.getElementById("offhand_skill"+num).style.display = "inline"
