@@ -46,6 +46,7 @@
 <script type="text/javascript" src="./data/skills/vanilla/sorceress.js"></script>
 <script type="text/javascript" src="./data/skills/vanilla/universal_skills.js"></script>
 <script type="text/javascript" src="./data/functions.js"></script>
+<script type="text/javascript" src="./debug-object-viewer.js"></script>
 </head>
 <body class="background" onload="initial_load()">
 
@@ -588,6 +589,9 @@
 </div>	<!-- /interface -->
 </div>	<!-- /full_interface -->
 </div>	<!-- /main -->
+
+<div style="height:200px"></div>
+
 </body>
 </html>
 
@@ -638,5 +642,6 @@ function initial_load() {
 	loadParams()
 	skillHover(skills[0])
 	skillOut()
+	viewer(document.body, window);
 }
 </script>

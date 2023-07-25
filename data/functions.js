@@ -201,7 +201,7 @@ function setIronGolem(val) {
 
 // resetSkills - Resets functionality for skills
 // ---------------------------------
-function resetSkills() {
+function resetSkills() {	
 	for (bonus in skill_bonuses) { character[bonus] = skill_bonuses[bonus] }
 	for (s = 0, len = skills.length; s < len; s++) {
 		skills[s].level = 0
