@@ -4485,11 +4485,11 @@ function checkSkill(skillName, num) {
 		skill = skills[s]
 	} }
 	
-	var c = character;
-	var strTotal = (c.strength + c.all_attributes + c.level*c.strength_per_level);
-	var dexTotal = (c.dexterity + c.all_attributes + c.level*c.dexterity_per_level);
-	var energyTotal = Math.floor((c.energy + c.all_attributes)*(1+c.max_energy/100));
-	var ar = ((dexTotal - 7) * 5 + c.ar + c.level*c.ar_per_level + c.ar_const) * (1+(c.ar_skillup + c.ar_skillup2 + c.ar_bonus + c.level*c.ar_bonus_per_level)/100) * (1+c.ar_shrine_bonus/100);
+	//var character = character;
+	var strTotal = (character.strength + character.all_attributes + character.level*character.strength_per_level);
+	var dexTotal = (character.dexterity + character.all_attributes + character.level*character.dexterity_per_level);
+	var energyTotal = Math.floor((character.energy + character.all_attributes)*(1+character.max_energy/100));
+	var ar = ((dexTotal - 7) * 5 + character.ar + character.level*character.ar_per_level + character.ar_const) * (1+(character.ar_skillup + character.ar_skillup2 + character.ar_bonus + character.level*character.ar_bonus_per_level)/100) * (1+character.ar_shrine_bonus/100);
 
 	var physDamage = [0,0,1];
 	if (skillName == "Poison Javelin" || skillName == "Lightning Bolt" || skillName == "Plague Javelin" || skillName == "Lightning Fury" || skillName == "Power Throw" || skillName == "Ethereal Throw") {
@@ -4503,16 +4503,16 @@ function checkSkill(skillName, num) {
 	if (skillName != " ­ ­ ­ ­ Skill 1" && skillName != " ­ ­ ­ ­ Skill 2") {
 		var outcome = {min:0,max:0,ar:0};
 		if (native_skill == 0) { outcome = character_all.any.getSkillDamage(skillName, ar, physDamage[0], physDamage[1], physDamage[2], nonPhys_min, nonPhys_max); }
-		else { outcome = c.getSkillDamage(skill, ar, physDamage[0], physDamage[1], physDamage[2], nonPhys_min, nonPhys_max); }
+		else { outcome = character.getSkillDamage(skill, ar, physDamage[0], physDamage[1], physDamage[2], nonPhys_min, nonPhys_max); }
 		
 		//var enemy_lvl = ~~MonStats[monsterID][4+c.difficulty];
-		var enemy_lvl = Math.min(~~c.level,89);	// temp, sets 'area level' at the character's level (or as close as possible if the area level isn't available in the selected difficulty)
-		if (c.difficulty == 1) { enemy_lvl = Math.min(43,enemy_lvl) }
-		else if (c.difficulty == 2) { enemy_lvl = Math.max(36,Math.min(66,enemy_lvl)) }
-		else if (c.difficulty == 3) { enemy_lvl = Math.max(67,enemy_lvl) }
-		var enemy_def = (MonStats[monsterID][8] * MonLevel[enemy_lvl][c.difficulty])/100;
-		enemy_def = Math.max(0,enemy_def + enemy_def*(c.enemy_defense+c.target_defense)/100+c.enemy_defense_flat)
-		var hit_chance = Math.round(Math.max(5,Math.min(95,(100 * outcome.ar / (outcome.ar + enemy_def)) * (2 * c.level / (c.level + enemy_lvl)))));
+		var enemy_lvl = Math.min(~~character.level,89);	// temp, sets 'area level' at the character's level (or as close as possible if the area level isn't available in the selected difficulty)
+		if (character.difficulty == 1) { enemy_lvl = Math.min(43,enemy_lvl) }
+		else if (character.difficulty == 2) { enemy_lvl = Math.max(36,Math.min(66,enemy_lvl)) }
+		else if (character.difficulty == 3) { enemy_lvl = Math.max(67,enemy_lvl) }
+		var enemy_def = (MonStats[monsterID][8] * MonLevel[enemy_lvl][character.difficulty])/100;
+		enemy_def = Math.max(0,enemy_def + enemy_def*(character.enemy_defense+character.target_defense)/100+character.enemy_defense_flat)
+		var hit_chance = Math.round(Math.max(5,Math.min(95,(100 * outcome.ar / (outcome.ar + enemy_def)) * (2 * character.level / (character.level + enemy_lvl)))));
 		
 		var output = ": " + outcome.min + "-" + outcome.max + " {"+Math.ceil((outcome.min+outcome.max)/2)+"}";
 		if (~~outcome.min != 0 && ~~outcome.max != 0) { document.getElementById("skill"+num+"_info").innerHTML = output } else { document.getElementById("skill"+num+"_info").innerHTML = ":" }
@@ -4526,7 +4526,7 @@ function checkSkill(skillName, num) {
 		var nonPhys_min_offhand = Math.floor(ohd.fMin + ohd.cMin + ohd.lMin + ohd.pMin + ohd.mMin);
 		var nonPhys_max_offhand = Math.floor(ohd.fMax + ohd.cMax + ohd.lMax + ohd.pMax + ohd.mMax);
 		var outcome = {min:0,max:0,ar:0};
-		outcome = c.getSkillDamage(skill, ar, physDamage_offhand[0], physDamage_offhand[1], physDamage_offhand[2], nonPhys_min_offhand, nonPhys_max_offhand);
+		outcome = character.getSkillDamage(skill, ar, physDamage_offhand[0], physDamage_offhand[1], physDamage_offhand[2], nonPhys_min_offhand, nonPhys_max_offhand);
 		var output = outcome.min + "-" + outcome.max + " {"+Math.ceil((outcome.min+outcome.max)/2)+"}";
 		if (outcome.min != 0 && outcome.max != 0) { document.getElementById("offhand_skill"+num+"_damage").innerHTML = output }
 		//if (outcome.ar != 0) { document.getElementById("ar_skill"+num).innerHTML += " ... " + outcome.ar }
@@ -4535,8 +4535,8 @@ function checkSkill(skillName, num) {
 	}
 	if (skillName == "Lightning Surge" || skillName == "Chain Lightning") {
 		var fcrTotal = character.fcr + character.level*character.fcr_per_level;
-		var fcr_f = c.fcr_frames_alt;
-		for (let i = 1; i < c.fcr_bp_alt.length; i++) { if (fcrTotal >= c.fcr_bp_alt[i]) { fcr_f -= 1 } }
+		var fcr_f = character.fcr_frames_alt;
+		for (let i = 1; i < character.fcr_bp_alt.length; i++) { if (fcrTotal >= character.fcr_bp_alt[i]) { fcr_f -= 1 } }
 		document.getElementById("ar_skill"+num).innerHTML = "Cast Rate: "+fcr_f+" frames"
 	}
 	

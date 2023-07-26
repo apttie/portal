@@ -13,44 +13,44 @@ var character_sorceress = {class_name:"Sorceress", strength:10, dexterity:25, vi
 	// result: value of the skill element at the specified level
 	// ---------------------------------
 	getSkillData : function(skill, lvl, elem) {
-		var sk = skills;
+		//var skills = skills;
 		//var character = character;
 		var result = skill.data.values[elem][lvl];
 		
-		if (skill.name == "Ice Bolt" && elem < 2) { 					result *= ((1 + (0.25*sk[1].level + 0.25*sk[2].level + 0.25*sk[4].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Frigerate" && elem < 4) { 					result *= ((1 + (0.20*sk[4].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Frost Nova" && elem < 2) { 					result *= ((1 + (0.15*sk[3].level + 0.15*sk[4].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Ice Blast" && elem < 2) { 					result *= ((1 + (0.12*sk[0].level + 0.12*sk[5].level + 0.12*sk[6].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Ice Blast" && elem == 2) { 					result *= (1 + (0.10*sk[5].level)) }
-		if (skill.name == "Shiver Armor" && elem < 4 && elem > 1) { 	result *= ((1 + (0.18*sk[1].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Glacial Spike" && elem < 2) { 				result *= ((1 + (0.08*sk[0].level + 0.08*sk[3].level + 0.08*sk[7].level + 0.08*sk[9].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Glacial Spike" && elem == 2) { 				result *= (1 + (0.03*sk[6].level)) }
-		if (skill.name == "Blizzard" && elem < 2) { 					result *= ((1 + (0.09*sk[3].level + 0.09*sk[5].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Freezing Pulse" && elem < 3 && elem > 0) { 	result *= ((1 + (0.05*sk[0].level + 0.05*sk[3].level + 0.05*sk[5].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Chilling Armor" && elem < 4 && elem > 1) { 	result *= ((1 + (0.18*sk[0].level)) * (1+character.cDamage/100)) }
-		if (skill.name == "Frozen Orb" && elem < 2) { 					result *= ((1 + (0.02*sk[0].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Ice Bolt" && elem < 2) { 					result *= ((1 + (0.25*skills[1].level + 0.25*skills[2].level + 0.25*skills[4].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Frigerate" && elem < 4) { 					result *= ((1 + (0.20*skills[4].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Frost Nova" && elem < 2) { 					result *= ((1 + (0.15*skills[3].level + 0.15*skills[4].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Ice Blast" && elem < 2) { 					result *= ((1 + (0.12*skills[0].level + 0.12*skills[5].level + 0.12*skills[6].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Ice Blast" && elem == 2) { 					result *= (1 + (0.10*skills[5].level)) }
+		if (skill.name == "Shiver Armor" && elem < 4 && elem > 1) { 	result *= ((1 + (0.18*skills[1].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Glacial Spike" && elem < 2) { 				result *= ((1 + (0.08*skills[0].level + 0.08*skills[3].level + 0.08*skills[7].level + 0.08*skills[9].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Glacial Spike" && elem == 2) { 				result *= (1 + (0.03*skills[6].level)) }
+		if (skill.name == "Blizzard" && elem < 2) { 					result *= ((1 + (0.09*skills[3].level + 0.09*skills[5].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Freezing Pulse" && elem < 3 && elem > 0) { 	result *= ((1 + (0.05*skills[0].level + 0.05*skills[3].level + 0.05*skills[5].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Chilling Armor" && elem < 4 && elem > 1) { 	result *= ((1 + (0.18*skills[0].level)) * (1+character.cDamage/100)) }
+		if (skill.name == "Frozen Orb" && elem < 2) { 					result *= ((1 + (0.02*skills[0].level)) * (1+character.cDamage/100)) }
 		
-		if (skill.name == "Charged Bolt" && elem < 3 && elem > 0) { 	result *= ((1 + (0.08*sk[15].level + 0.08*sk[16].level)) * (1+character.lDamage/100)) }
+		if (skill.name == "Charged Bolt" && elem < 3 && elem > 0) { 	result *= ((1 + (0.08*skills[15].level + 0.08*skills[16].level)) * (1+character.lDamage/100)) }
 		if (skill.name == "Telekinesis" && elem < 2) { 					result *= ((1+character.lDamage/100)) }
-		if (skill.name == "Nova" && elem < 2) { 						result *= ((1 + (0.03*sk[18].level)) * (1+character.lDamage/100)) }
-		if (skill.name == "Lightning Surge" && elem < 2) { 				result *= ((1 + (0.05*sk[11].level + 0.05*sk[16].level)) * (1+character.lDamage/100)) }
-		if (skill.name == "Chain Lightning" && elem < 3 && elem > 0) { 	result *= ((1 + (0.03*sk[11].level + 0.03*sk[15].level)) * (1+character.lDamage/100)) }
+		if (skill.name == "Nova" && elem < 2) { 						result *= ((1 + (0.03*skills[18].level)) * (1+character.lDamage/100)) }
+		if (skill.name == "Lightning Surge" && elem < 2) { 				result *= ((1 + (0.05*skills[11].level + 0.05*skills[16].level)) * (1+character.lDamage/100)) }
+		if (skill.name == "Chain Lightning" && elem < 3 && elem > 0) { 	result *= ((1 + (0.03*skills[11].level + 0.03*skills[15].level)) * (1+character.lDamage/100)) }
 		if (skill.name == "Teleport" && elem == 0) { 					result = Math.max(0, (0.05*Math.floor((character.mana + character.level*character.mana_per_level + ((((character.energy + character.all_attributes)*(1+character.max_energy/100))-character.starting_energy)*character.mana_per_energy)) * (1 + character.max_mana/100)) - result)) }
-		if (skill.name == "Discharge" && elem < 3 && elem > 0) { 		result *= ((1 + 0.03*sk[12].level + 0.03*sk[14].level + 0.01*Math.floor(((character.energy + character.all_attributes)*(1+character.max_energy/100))/2)) * (1+character.lDamage/100)) }
-		if (skill.name == "Energy Shield" && elem == 0) { 				result = (4*sk[13].level + 6) }
-		if (skill.name == "Thunder Storm" && elem == 0) { 				result = (2.75 - (0.12*sk[17].level)) }
-		if (skill.name == "Thunder Storm" && elem < 4 && elem > 1) { 	result *= ((1 + (0.21*sk[13].level + 0.21*sk[15].level)) * (1+character.lDamage/100)) }
+		if (skill.name == "Discharge" && elem < 3 && elem > 0) { 		result *= ((1 + 0.03*skills[12].level + 0.03*skills[14].level + 0.01*Math.floor(((character.energy + character.all_attributes)*(1+character.max_energy/100))/2)) * (1+character.lDamage/100)) }
+		if (skill.name == "Energy Shield" && elem == 0) { 				result = (4*skills[13].level + 6) }
+		if (skill.name == "Thunder Storm" && elem == 0) { 				result = (2.75 - (0.12*skills[17].level)) }
+		if (skill.name == "Thunder Storm" && elem < 4 && elem > 1) { 	result *= ((1 + (0.21*skills[13].level + 0.21*skills[15].level)) * (1+character.lDamage/100)) }
 		
-		if (skill.name == "Fire Bolt" && elem < 2) { 					result *= ((1 + (0.35*sk[26].level + 0.35*sk[27].level + 0.35*sk[29].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Blaze" && elem < 3 && elem > 0) { 			result *= ((1 + (0.08*sk[25].level + 0.03*sk[23].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Immolate" && elem < 2) { 					result *= ((1 + (0.04*sk[23].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Fire Ball" && elem < 2) { 					result *= ((1 + (0.06*sk[22].level + 0.06*sk[29].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Fire Wall" && elem < 2) { 					result *= ((1 + (0.04*sk[23].level + 0.04*sk[24].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Enflame" && elem < 4) { 						result *= ((1 + (0.08*sk[23].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Meteor" && elem < 2) { 						result *= ((1 + (0.06*sk[22].level + 0.06*sk[26].level)) * (1+character.fDamage/100)) }	// physical damage multipled by fire bonus (25% of total fire damage as extra physical damage)
-		if (skill.name == "Meteor" && elem < 4 && elem > 1) { 			result *= ((1 + (0.06*sk[22].level + 0.06*sk[26].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Meteor" && elem < 6 && elem > 3) { 			result *= ((1 + (0.03*sk[24].level)) * (1+character.fDamage/100)) }
-		if (skill.name == "Hydra" && elem < 3 && elem > 0) { 			result *= ((1 + (0.01*sk[23].level + 0.02*sk[26].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Fire Bolt" && elem < 2) { 					result *= ((1 + (0.35*skills[26].level + 0.35*skills[27].level + 0.35*skills[29].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Blaze" && elem < 3 && elem > 0) { 			result *= ((1 + (0.08*skills[25].level + 0.03*skills[23].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Immolate" && elem < 2) { 					result *= ((1 + (0.04*skills[23].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Fire Ball" && elem < 2) { 					result *= ((1 + (0.06*skills[22].level + 0.06*skills[29].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Fire Wall" && elem < 2) { 					result *= ((1 + (0.04*skills[23].level + 0.04*skills[24].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Enflame" && elem < 4) { 						result *= ((1 + (0.08*skills[23].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Meteor" && elem < 2) { 						result *= ((1 + (0.06*skills[22].level + 0.06*skills[26].level)) * (1+character.fDamage/100)) }	// physical damage multipled by fire bonus (25% of total fire damage as extra physical damage)
+		if (skill.name == "Meteor" && elem < 4 && elem > 1) { 			result *= ((1 + (0.06*skills[22].level + 0.06*skills[26].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Meteor" && elem < 6 && elem > 3) { 			result *= ((1 + (0.03*skills[24].level)) * (1+character.fDamage/100)) }
+		if (skill.name == "Hydra" && elem < 3 && elem > 0) { 			result *= ((1 + (0.01*skills[23].level + 0.02*skills[26].level)) * (1+character.fDamage/100)) }
 
 	return result
 	},
