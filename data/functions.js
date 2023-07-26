@@ -3773,7 +3773,7 @@ function update() {
 // return: array with [min damage, max damage, multiplier]
 // ---------------------------------
 function getWeaponDamage(str, dex, group, thrown) {
-	var c = character;
+	//var character = character;
 	var type = equipped[group].type;
 	var other = "offhand";
 	if (group == "offhand") { other = "weapon" }
@@ -3788,27 +3788,27 @@ function getWeaponDamage(str, dex, group, thrown) {
 	}
 	// multiplier from skills
 	var weapon_skillup = 0;
-	if (type == "sword" || type == "axe" || type == "dagger") { weapon_skillup = c.edged_damage; c.ar_skillup2 = c.edged_ar; c.cstrike_skillup = c.edged_cstrike; }
-	else if (type == "polearm" || type == "spear") { weapon_skillup = c.pole_damage; c.ar_skillup2 = c.pole_ar; c.cstrike_skillup = c.pole_cstrike; }
-	else if (type == "mace" || type == "scepter" || type == "staff" || type == "hammer" || type == "club" || type == "wand") { weapon_skillup = c.blunt_damage; c.ar_skillup2 = c.blunt_ar; c.cstrike_skillup = c.blunt_cstrike; }
-	else if (type == "thrown" || type == "javelin") { weapon_skillup = c.thrown_damage; c.ar_skillup2 = c.thrown_ar; c.pierce_skillup = c.thrown_pierce; c.cstrike_skillup = c.thrown_cstrike; }	// check if javelins can benefit from Pole Weapon Mastery
-	else if (type == "claw") { weapon_skillup = c.claw_damage; c.ar_skillup2 = c.claw_ar; c.cstrike_skillup = c.claw_cstrike; }
-	else { weapon_skillup = 0; c.ar_skillup2 = 0; c.cstrike_skillup = 0; c.pierce_skillup = 0; }
+	if (type == "sword" || type == "axe" || type == "dagger") { weapon_skillup = character.edged_damage; character.ar_skillup2 = character.edged_ar; character.cstrike_skillup = character.edged_cstrike; }
+	else if (type == "polearm" || type == "spear") { weapon_skillup = character.pole_damage; character.ar_skillup2 = character.pole_ar; character.cstrike_skillup = character.pole_cstrike; }
+	else if (type == "mace" || type == "scepter" || type == "staff" || type == "hammer" || type == "club" || type == "wand") { weapon_skillup = character.blunt_damage; character.ar_skillup2 = character.blunt_ar; character.cstrike_skillup = character.blunt_cstrike; }
+	else if (type == "thrown" || type == "javelin") { weapon_skillup = character.thrown_damage; character.ar_skillup2 = character.thrown_ar; character.pierce_skillup = character.thrown_pierce; character.cstrike_skillup = character.thrown_cstrike; }	// check if javelins can benefit from Pole Weapon Mastery
+	else if (type == "claw") { weapon_skillup = character.claw_damage; character.ar_skillup2 = character.claw_ar; character.cstrike_skillup = character.claw_cstrike; }
+	else { weapon_skillup = 0; character.ar_skillup2 = 0; character.cstrike_skillup = 0; character.pierce_skillup = 0; }
 	var e_damage_other = 0;
 	var phys_min_other = 0;
 	var phys_max_other = 0;
 	if (offhandType == "weapon") {
 		e_damage_other = (~~(equipped[other].e_damage) + ~~(socketed[other].totals.e_damage) + ~~(corruptsEquipped[other].e_damage))
-		phys_min_other = ~~equipped[other].damage_min + c.level*~~equipped[other].min_damage_per_level
-		phys_max_other = ~~equipped[other].damage_max + c.level*~~equipped[other].max_damage_per_level
+		phys_min_other = ~~equipped[other].damage_min + character.level*~~equipped[other].min_damage_per_level
+		phys_max_other = ~~equipped[other].damage_max + character.level*~~equipped[other].max_damage_per_level
 	}
-	var e_damage = c.e_damage - e_damage_other;
+	var e_damage = character.e_damage - e_damage_other;
 	var base_min = equipped[group].base_damage_min;
 	var base_max = equipped[group].base_damage_max;
 	if (thrown == 1) { base_min = ~~(equipped[group].throw_min); base_max = ~~(equipped[group].throw_max); }
-	var phys_min = (base_min * (1+e_damage/100) + c.damage_min + c.level*c.min_damage_per_level - phys_min_other);
-	var phys_max = (base_max * (1+(e_damage+(c.level*c.e_max_damage_per_level))/100) + c.damage_max + c.level*c.max_damage_per_level - phys_max_other);
-	var phys_mult = (1+statBonus+(c.damage_bonus+weapon_skillup)/100);
+	var phys_min = (base_min * (1+e_damage/100) + character.damage_min + character.level*character.min_damage_per_level - phys_min_other);
+	var phys_max = (base_max * (1+(e_damage+(character.level*character.e_max_damage_per_level))/100) + character.damage_max + character.level*character.max_damage_per_level - phys_max_other);
+	var phys_mult = (1+statBonus+(character.damage_bonus+weapon_skillup)/100);
 	if (phys_max < phys_min) { phys_max = phys_min + 1 };
 	var values = [phys_min, phys_max, phys_mult];
 	
@@ -3820,32 +3820,32 @@ function getWeaponDamage(str, dex, group, thrown) {
 // return: indexed array with elemental/magic min/max damage values
 // ---------------------------------
 function getNonPhysWeaponDamage(group) {
-	var c = character;
+	//	var character = character;
 	var other = "offhand";
 	if (group == "offhand") { other = "weapon" }
-	var energyTotal = (c.energy + c.all_attributes)*(1+c.max_energy/100);
+	var energyTotal = (character.energy + character.all_attributes)*(1+character.max_energy/100);
 	var cDamage_sockets_filled = ~~(equipped.weapon.cDamage_per_socketed*socketed.weapon.socketsFilled)+~~(equipped.offhand.cDamage_per_socketed*socketed.offhand.socketsFilled);
-	var f_min = c.fDamage_min*(1+c.fDamage/100);
-	var f_max = (c.fDamage_max+(c.level*c.fDamage_max_per_level))*(1+c.fDamage/100);
-	var c_min = (c.cDamage_min+(c.cDamage_per_ice*c.charge_ice)+cDamage_sockets_filled)*(1+c.cDamage/100);
-	var c_max = (c.cDamage_max+(c.cDamage_per_ice*c.charge_ice)+(c.level*c.cDamage_max_per_level)+cDamage_sockets_filled)*(1+c.cDamage/100);
-	var l_min = c.lDamage_min*(1+c.lDamage/100);
-	var l_max = (c.lDamage_max+(c.level*c.lDamage_max_per_level)+(Math.floor(energyTotal/2)*c.lDamage_max_per_2_energy))*(1+c.lDamage/100);
-	var p_min = (c.pDamage_all+c.pDamage_min)*(1+c.pDamage/100);	// TODO: Damage over time should be separate from regular damage. Calculate poison bitrate.
-	var p_max = (c.pDamage_all+c.pDamage_max)*(1+c.pDamage/100);	//	 Also, poison doesn't overlap from different sources?
-	var m_min = c.mDamage_min;
-	var m_max = c.mDamage_max;
+	var f_min = character.fDamage_min*(1+character.fDamage/100);
+	var f_max = (character.fDamage_max+(character.level*character.fDamage_max_per_level))*(1+character.fDamage/100);
+	var c_min = (character.cDamage_min+(character.cDamage_per_ice*character.charge_ice)+cDamage_sockets_filled)*(1+character.cDamage/100);
+	var c_max = (character.cDamage_max+(character.cDamage_per_ice*character.charge_ice)+(character.level*character.cDamage_max_per_level)+cDamage_sockets_filled)*(1+character.cDamage/100);
+	var l_min = character.lDamage_min*(1+character.lDamage/100);
+	var l_max = (character.lDamage_max+(character.level*character.lDamage_max_per_level)+(Math.floor(energyTotal/2)*character.lDamage_max_per_2_energy))*(1+character.lDamage/100);
+	var p_min = (character.pDamage_all+character.pDamage_min)*(1+character.pDamage/100);	// TODO: Damage over time should be separate from regular damage. Calculate poison bitrate.
+	var p_max = (character.pDamage_all+character.pDamage_max)*(1+character.pDamage/100);	//	 Also, poison doesn't overlap from different sources?
+	var m_min = character.mDamage_min;
+	var m_max = character.mDamage_max;
 	if (offhandType == "weapon") {
-		f_min = (c.fDamage_min-~~(equipped[other].fDamage_min))*(1+c.fDamage/100);
-		f_max = ((c.fDamage_max-~~(equipped[other].fDamage_max))+(c.level*c.fDamage_max_per_level))*(1+c.fDamage/100);
-		c_min = ((c.cDamage_min-~~(equipped[other].cDamage_min))+(c.cDamage_per_ice*c.charge_ice)+cDamage_sockets_filled)*(1+c.cDamage/100);
-		c_max = ((c.cDamage_max-~~(equipped[other].cDamage_max))+(c.cDamage_per_ice*c.charge_ice)+(c.level*c.cDamage_max_per_level)+cDamage_sockets_filled)*(1+c.cDamage/100);
-		l_min = (c.lDamage_min-~~(equipped[other].lDamage_min))*(1+c.lDamage/100);
-		l_max = ((c.lDamage_max-~~(equipped[other].lDamage_max))+(c.level*c.lDamage_max_per_level)+(Math.floor(energyTotal/2)*c.lDamage_max_per_2_energy))*(1+c.lDamage/100);
-		p_min = (c.pDamage_all+c.pDamage_min-~~(equipped[other].pDamage_min))*(1+c.pDamage/100);
-		p_max = (c.pDamage_all+c.pDamage_max-~~(equipped[other].pDamage_max))*(1+c.pDamage/100);
-		m_min = c.mDamage_min - ~~(equipped[other].mDamage_min);
-		m_max = c.mDamage_max - ~~(equipped[other].mDamage_max);
+		f_min = (character.fDamage_min-~~(equipped[other].fDamage_min))*(1+character.fDamage/100);
+		f_max = ((character.fDamage_max-~~(equipped[other].fDamage_max))+(character.level*character.fDamage_max_per_level))*(1+character.fDamage/100);
+		c_min = ((character.cDamage_min-~~(equipped[other].cDamage_min))+(character.cDamage_per_ice*character.charge_ice)+cDamage_sockets_filled)*(1+character.cDamage/100);
+		c_max = ((character.cDamage_max-~~(equipped[other].cDamage_max))+(character.cDamage_per_ice*character.charge_ice)+(character.level*character.cDamage_max_per_level)+cDamage_sockets_filled)*(1+character.cDamage/100);
+		l_min = (character.lDamage_min-~~(equipped[other].lDamage_min))*(1+character.lDamage/100);
+		l_max = ((character.lDamage_max-~~(equipped[other].lDamage_max))+(character.level*character.lDamage_max_per_level)+(Math.floor(energyTotal/2)*character.lDamage_max_per_2_energy))*(1+character.lDamage/100);
+		p_min = (character.pDamage_all+character.pDamage_min-~~(equipped[other].pDamage_min))*(1+character.pDamage/100);
+		p_max = (character.pDamage_all+character.pDamage_max-~~(equipped[other].pDamage_max))*(1+character.pDamage/100);
+		m_min = character.mDamage_min - ~~(equipped[other].mDamage_min);
+		m_max = character.mDamage_max - ~~(equipped[other].mDamage_max);
 	}
 	if (f_max < f_min) { f_max = f_min + 1 };
 	if (c_max < c_min) { c_max = c_min + 1 };
@@ -3863,15 +3863,15 @@ function updateStats() { if (loaded == 1) { updatePrimaryStats(); updateOther();
 // updatePrimaryStats - Updates stats shown by the default (original D2) stat page
 // ---------------------------------
 function updatePrimaryStats() {
-	var c = character;
-	var strTotal = (c.strength + c.all_attributes + c.level*c.strength_per_level);
-	var dexTotal = (c.dexterity + c.all_attributes + c.level*c.dexterity_per_level);
-	var vitTotal = (c.vitality + c.all_attributes + c.level*c.vitality_per_level);
-	var energyTotal = (c.energy + c.all_attributes)*(1+c.max_energy/100);
+	//var character = character;	
+	var strTotal = (character.strength + character.all_attributes + character.level*character.strength_per_level);
+	var dexTotal = (character.dexterity + character.all_attributes + character.level*character.dexterity_per_level);
+	var vitTotal = (character.vitality + character.all_attributes + character.level*character.vitality_per_level);
+	var energyTotal = (character.energy + character.all_attributes)*(1+character.max_energy/100);	
 	
-	var life_addon = (vitTotal-c.starting_vitality)*c.life_per_vitality;
-	var stamina_addon = (vitTotal-c.starting_vitality)*c.stamina_per_vitality;
-	var mana_addon = (energyTotal-c.starting_energy)*c.mana_per_energy;
+	var life_addon = (vitTotal-character.starting_vitality)*character.life_per_vitality;
+	var stamina_addon = (vitTotal-character.starting_vitality)*character.stamina_per_vitality;
+	var mana_addon = (energyTotal-character.starting_energy)*character.mana_per_energy;
 	
 	var item_def = 0;
 	for (group in corruptsEquipped) {
@@ -3894,8 +3894,8 @@ function updatePrimaryStats() {
 			//equipped[group].item_defense = ~~equipped[group].defense + Math.floor(~~equipped[group].defense_per_level*c.level)
 		}
 	}
-	var def = (item_def + c.defense + c.level*c.defense_per_level + Math.floor(dexTotal/4)) * (1 + (c.defense_bonus + c.defense_skillup)/100);
-	var ar = ((dexTotal - 7) * 5 + c.ar + c.level*c.ar_per_level + c.ar_const + (c.ar_per_socketed*socketed.offhand.socketsFilled)) * (1+(c.ar_skillup + c.ar_skillup2 + c.ar_bonus + c.level*c.ar_bonus_per_level)/100) * (1+c.ar_shrine_bonus/100);
+	var def = (item_def + character.defense + character.level*character.defense_per_level + Math.floor(dexTotal/4)) * (1 + (character.defense_bonus + character.defense_skillup)/100);
+	var ar = ((dexTotal - 7) * 5 + character.ar + character.level*character.ar_per_level + character.ar_const + (character.ar_per_socketed*socketed.offhand.socketsFilled)) * (1+(character.ar_skillup + character.ar_skillup2 + character.ar_bonus + character.level*character.ar_bonus_per_level)/100) * (1+character.ar_shrine_bonus/100);
 	
 /*	// Poison Calculation Testing
 	var pDamage = c.pDamage_all;
@@ -3927,13 +3927,13 @@ function updatePrimaryStats() {
 		}
 	}
 	
-	var block_shield = c.block;
-	if (c.class_name == "Amazon" || c.class_name == "Assassin" || c.class_name == "Barbarian") { block_shield -= 5 }
-	if (c.class_name == "Druid" || (c.class_name == "Necromancer" && equipped.offhand.only != "necromancer") || c.class_name == "Sorceress") { block_shield -= 10 }
-	var block = (Math.max(0,block_shield) + c.ibc)*(dexTotal-15)/(c.level*2)
-	if (c.block_skillup > 0) { block = Math.min((c.block_skillup*(dexTotal-15)/(c.level*2)),c.block_skillup) }
-	if (c.running > 0) { block = Math.min(25,block/3) }
-	if (c.block > 0 || c.block_skillup > 0) {
+	var block_shield = character.block;
+	if (character.class_name == "Amazon" || character.class_name == "Assassin" || character.class_name == "Barbarian") { block_shield -= 5 }
+	if (character.class_name == "Druid" || (character.class_name == "Necromancer" && equipped.offhand.only != "necromancer") || character.class_name == "Sorceress") { block_shield -= 10 }
+	var block = (Math.max(0,block_shield) + character.ibc)*(dexTotal-15)/(character.level*2)
+	if (character.block_skillup > 0) { block = Math.min((character.block_skillup*(dexTotal-15)/(character.level*2)),character.block_skillup) }
+	if (character.running > 0) { block = Math.min(25,block/3) }
+	if (character.block > 0 || character.block_skillup > 0) {
 		document.getElementById("block_label").style.visibility = "visible"
 		document.getElementById("block").innerHTML = Math.floor(Math.min(75,block))+"%"
 	} else {
@@ -3942,13 +3942,13 @@ function updatePrimaryStats() {
 	}
 	
 	//var enemy_lvl = ~~MonStats[monsterID][4+c.difficulty];
-	var enemy_lvl = Math.min(~~c.level,89);	// temp, sets 'area level' at the character's level (or as close as possible if the area level isn't available in the selected difficulty)
-	if (c.difficulty == 1) { enemy_lvl = Math.min(43,enemy_lvl) }
-	else if (c.difficulty == 2) { enemy_lvl = Math.max(36,Math.min(66,enemy_lvl)) }
-	else if (c.difficulty == 3) { enemy_lvl = Math.max(67,enemy_lvl) }
-	var enemy_def = (~~MonStats[monsterID][8] * ~~MonLevel[enemy_lvl][c.difficulty])/100;
-	enemy_def = Math.max(0,enemy_def + enemy_def*(c.enemy_defense+c.target_defense)/100+c.enemy_defense_flat)
-	var hit_chance = Math.round(Math.max(5,Math.min(95,(100 * ar / (ar + enemy_def)) * (2 * c.level / (c.level + enemy_lvl)))));
+	var enemy_lvl = Math.min(~~character.level,89);	// temp, sets 'area level' at the character's level (or as close as possible if the area level isn't available in the selected difficulty)
+	if (character.difficulty == 1) { enemy_lvl = Math.min(43,enemy_lvl) }
+	else if (character.difficulty == 2) { enemy_lvl = Math.max(36,Math.min(66,enemy_lvl)) }
+	else if (character.difficulty == 3) { enemy_lvl = Math.max(67,enemy_lvl) }
+	var enemy_def = (~~MonStats[monsterID][8] * ~~MonLevel[enemy_lvl][character.difficulty])/100;
+	enemy_def = Math.max(0,enemy_def + enemy_def*(character.enemy_defense+character.target_defense)/100+character.enemy_defense_flat)
+	var hit_chance = Math.round(Math.max(5,Math.min(95,(100 * ar / (ar + enemy_def)) * (2 * character.level / (character.level + enemy_lvl)))));
 
 	document.getElementById("strength").innerHTML = Math.floor(strTotal)
 	document.getElementById("dexterity").innerHTML = Math.floor(dexTotal)
@@ -3958,42 +3958,42 @@ function updatePrimaryStats() {
 	document.getElementById("dexterity2").innerHTML = Math.floor(dexTotal)
 	document.getElementById("vitality2").innerHTML = Math.floor(vitTotal)
 	document.getElementById("energy2").innerHTML = Math.floor(energyTotal)
-	document.getElementById("defense").innerHTML = Math.floor(def + c.melee_defense)
-	if ((c.missile_defense-c.melee_defense) > 0) { document.getElementById("defense").innerHTML += " (+" + (c.missile_defense) + ")" }	// add difference when missile & melee defense are both present?
-	if (c.running > 0) { document.getElementById("defense").style.color = "brown" }
+	document.getElementById("defense").innerHTML = Math.floor(def + character.melee_defense)
+	if ((character.missile_defense-character.melee_defense) > 0) { document.getElementById("defense").innerHTML += " (+" + (character.missile_defense) + ")" }	// add difference when missile & melee defense are both present?
+	if (character.running > 0) { document.getElementById("defense").style.color = "brown" }
 	else { document.getElementById("defense").style.color = "gray" }
 	document.getElementById("ar").innerHTML = Math.floor(ar)+" ("+hit_chance+"%)"
-	document.getElementById("stamina").innerHTML = Math.floor((c.stamina + c.level*c.stamina_per_level + stamina_addon) * (1+c.stamina_skillup/100) * (1+c.max_stamina/100))
-	var lifeTotal = Math.floor((c.life + c.level*c.life_per_level + life_addon) * (1 + c.max_life/100));
+	document.getElementById("stamina").innerHTML = Math.floor((character.stamina + character.level*character.stamina_per_level + stamina_addon) * (1+character.stamina_skillup/100) * (1+character.max_stamina/100))
+	var lifeTotal = Math.floor((character.life + character.level*character.life_per_level + life_addon) * (1 + character.max_life/100));
 	document.getElementById("life").innerHTML = lifeTotal
-	document.getElementById("mana").innerHTML = Math.floor((c.mana + c.level*c.mana_per_level + mana_addon) * (1 + c.max_mana/100))
-	document.getElementById("level").innerHTML = c.level
-	document.getElementById("class_name").innerHTML = c.class_name
-	document.getElementById("remainingstats").innerHTML = c.statpoints
-	document.getElementById("remainingskills").innerHTML = c.skillpoints
-	document.getElementById("fres").innerHTML = (c.fRes + c.all_res - c.fRes_penalty + c.resistance_skillup) + " / " + Math.min(RES_CAP,(c.fRes_max_base + c.fRes_max + c.fRes_skillup)) + "%"
-	document.getElementById("cres").innerHTML = (c.cRes + c.all_res - c.cRes_penalty + c.resistance_skillup) + " / " + Math.min(RES_CAP,(c.cRes_max_base + c.cRes_max + c.cRes_skillup)) + "%"
-	document.getElementById("lres").innerHTML = (c.lRes + c.all_res - c.lRes_penalty + c.resistance_skillup) + " / " + Math.min(RES_CAP,(c.lRes_max_base + c.lRes_max + c.lRes_skillup)) + "%"
-	document.getElementById("pres").innerHTML = (c.pRes + c.all_res - c.pRes_penalty + c.resistance_skillup) + " / " + Math.min(RES_CAP,(c.pRes_max_base + c.pRes_max + c.pRes_skillup)) + "%"
-	var magicRes = c.mRes;
-	if (c.mRes > 0 || c.mDamage_reduced > 0) { magicRes += "%" }
-	if (c.mDamage_reduced > 0) { magicRes += (" +"+c.mDamage_reduced) }
+	document.getElementById("mana").innerHTML = Math.floor((character.mana + character.level*character.mana_per_level + mana_addon) * (1 + character.max_mana/100))
+	document.getElementById("level").innerHTML = character.level
+	document.getElementById("class_name").innerHTML = character.class_name
+	document.getElementById("remainingstats").innerHTML = character.statpoints
+	document.getElementById("remainingskills").innerHTML = character.skillpoints
+	document.getElementById("fres").innerHTML = (character.fRes + character.all_res - character.fRes_penalty + character.resistance_skillup) + " / " + Math.min(RES_CAP,(character.fRes_max_base + character.fRes_max + character.fRes_skillup)) + "%"
+	document.getElementById("cres").innerHTML = (character.cRes + character.all_res - character.cRes_penalty + character.resistance_skillup) + " / " + Math.min(RES_CAP,(character.cRes_max_base + character.cRes_max + character.cRes_skillup)) + "%"
+	document.getElementById("lres").innerHTML = (character.lRes + character.all_res - character.lRes_penalty + character.resistance_skillup) + " / " + Math.min(RES_CAP,(character.lRes_max_base + character.lRes_max + character.lRes_skillup)) + "%"
+	document.getElementById("pres").innerHTML = (character.pRes + character.all_res - character.pRes_penalty + character.resistance_skillup) + " / " + Math.min(RES_CAP,(character.pRes_max_base + character.pRes_max + character.pRes_skillup)) + "%"
+	var magicRes = character.mRes;
+	if (character.mRes > 0 || character.mDamage_reduced > 0) { magicRes += "%" }
+	if (character.mDamage_reduced > 0) { magicRes += (" +"+character.mDamage_reduced) }
 	document.getElementById("mres").innerHTML = magicRes
 	
-	var ias = c.ias + Math.floor(dexTotal/8)*c.ias_per_8_dexterity;
+	var ias = character.ias + Math.floor(dexTotal/8)*character.ias_per_8_dexterity;
 	if (offhandType == "weapon" && typeof(equipped.offhand.ias) != 'undefined') { ias -= equipped.offhand.ias }
-	var ias_total = ias + c.ias_skill;
+	var ias_total = ias + character.ias_skill;
 	document.getElementById("ias").innerHTML = ias; if (ias > 0) { document.getElementById("ias").innerHTML += "%" }
 	if (equipped.weapon.type != "" && equipped.weapon.special != 1) {
 		var weaponType = equipped.weapon.type;
 		var eIAS = Math.floor(120*ias/(120+ias));
 		var weaponFrames = 0;
-		var weaponSpeedModifier = c.baseSpeed - ~~equipped.offhand.baseSpeed;
+		var weaponSpeedModifier = character.baseSpeed - ~~equipped.offhand.baseSpeed;
 		var anim_speed = 256;
 		if (weaponType != "") {
 			// TODO: Add fpa/aps to skills (many skills attack multiple times at different speeds, or interact with IAS differently (e.g. +30 WSM for throwing skills))
 			if (weaponType == "club" || weaponType == "hammer") { weaponType = "mace" }
-			weaponFrames = c.weapon_frames[weaponType];
+			weaponFrames = character.weapon_frames[weaponType];
 			if (typeof(effects["Werewolf"]) != 'undefined') { if (effects["Werewolf"].info.enabled == 1) { weaponFrames = character_all.druid.wereform_frames[weaponType]; anim_speed = 256; } }
 			if (typeof(effects["Werebear"]) != 'undefined') { if (effects["Werebear"].info.enabled == 1) { weaponFrames = character_all.druid.wereform_frames[weaponType]; anim_speed = 224; } }
 			if (weaponType == "sword" || weaponType == "axe" || weaponType == "mace") { if (equipped.weapon.twoHanded == 1) { weaponFrames = weaponFrames[1]; } else { weaponFrames = weaponFrames[0]; } }
@@ -4001,7 +4001,7 @@ function updatePrimaryStats() {
 			if (weaponType == "claw") { anim_speed = 208 }	// can't interact with werewolf/werebear frames due to itemization
 		}
 		weaponFrames += 1
-		var combined_ias = Math.min(175,Math.max(15,(100 + c.ias_skill + eIAS - weaponSpeedModifier)));
+		var combined_ias = Math.min(175,Math.max(15,(100 + character.ias_skill + eIAS - weaponSpeedModifier)));
 		var frames_per_attack = Math.ceil((weaponFrames*256)/Math.floor(anim_speed * combined_ias / 100)) - 1;
 		if (weaponType == "claw") {
 			var frames_per_attack_alternate = Math.ceil(((weaponFrames+1)*256)/Math.floor(anim_speed * combined_ias / 100)) - 1;
@@ -4025,150 +4025,150 @@ function updatePrimaryStats() {
 			document.getElementById("ias").innerHTML += " ("+frames_per_attack+" fpa)"
 		}
 	}
-	if (c.flamme > 0) { document.getElementById("flamme").innerHTML = "Righteous Fire deals "+Math.floor((c.flamme/100*lifeTotal)*(1+c.fDamage/100))+" damage per second<br>" } else { document.getElementById("flamme").innerHTML = "" }
+	if (character.flamme > 0) { document.getElementById("flamme").innerHTML = "Righteous Fire deals "+Math.floor((character.flamme/100*lifeTotal)*(1+character.fDamage/100))+" damage per second<br>" } else { document.getElementById("flamme").innerHTML = "" }
 }
 
 // updateSecondaryStats - Updates stats shown on the secondary (Path of Diablo) stat page
 // ---------------------------------
 function updateSecondaryStats() {
-	var c = character;
+	//var character = character;
 	
-	var physRes = ""; if (c.pdr > 0) { physRes = Math.min(50,c.pdr)+"% " }
-	if (c.damage_reduced > 0) { physRes += ("+"+c.damage_reduced) }
-	if (c.pdr == 0 && c.damage_reduced == 0) { physRes = 0 }
+	var physRes = ""; if (character.pdr > 0) { physRes = Math.min(50,character.pdr)+"% " }
+	if (character.damage_reduced > 0) { physRes += ("+"+character.damage_reduced) }
+	if (character.pdr == 0 && character.damage_reduced == 0) { physRes = 0 }
 	document.getElementById("pdr").innerHTML = physRes
 
-	var fAbs = ""; if (c.fAbsorb > 0) { fAbs = c.fAbsorb+"% " }
-	if (c.fAbsorb_flat > 0 || c.fAbsorb_flat_per_level > 0) { fAbs += ("+"+Math.floor(c.fAbsorb_flat + (c.level*c.fAbsorb_flat_per_level))) }
-	if (c.fAbsorb == 0 && c.fAbsorb_flat == 0 && c.fAbsorb_flat_per_level == 0) { fAbs = 0 }
+	var fAbs = ""; if (character.fAbsorb > 0) { fAbs = character.fAbsorb+"% " }
+	if (character.fAbsorb_flat > 0 || character.fAbsorb_flat_per_level > 0) { fAbs += ("+"+Math.floor(character.fAbsorb_flat + (character.level*character.fAbsorb_flat_per_level))) }
+	if (character.fAbsorb == 0 && character.fAbsorb_flat == 0 && character.fAbsorb_flat_per_level == 0) { fAbs = 0 }
 	document.getElementById("fabsorb").innerHTML = fAbs
-	var cAbs = ""; if (c.cAbsorb > 0) { cAbs = c.cAbsorb+"% " }
-	if (c.cAbsorb_flat > 0 || c.cAbsorb_flat_per_level > 0) { cAbs += ("+"+Math.floor(c.cAbsorb_flat + (c.level*c.cAbsorb_flat_per_level))) }
-	if (c.cAbsorb == 0 && c.cAbsorb_flat == 0 && c.cAbsorb_flat_per_level == 0) { cAbs = 0 }
+	var cAbs = ""; if (character.cAbsorb > 0) { cAbs = character.cAbsorb+"% " }
+	if (character.cAbsorb_flat > 0 || character.cAbsorb_flat_per_level > 0) { cAbs += ("+"+Math.floor(character.cAbsorb_flat + (character.level*character.cAbsorb_flat_per_level))) }
+	if (character.cAbsorb == 0 && character.cAbsorb_flat == 0 && character.cAbsorb_flat_per_level == 0) { cAbs = 0 }
 	document.getElementById("cabsorb").innerHTML = cAbs
-	var lAbs = ""; if (c.lAbsorb > 0) { lAbs = c.lAbsorb+"% " }
-	if (c.lAbsorb_flat > 0) { lAbs += ("+"+c.lAbsorb_flat) }
-	if (c.lAbsorb == 0 && c.lAbsorb_flat == 0) { lAbs = 0 }
+	var lAbs = ""; if (character.lAbsorb > 0) { lAbs = character.lAbsorb+"% " }
+	if (character.lAbsorb_flat > 0) { lAbs += ("+"+character.lAbsorb_flat) }
+	if (character.lAbsorb == 0 && character.lAbsorb_flat == 0) { lAbs = 0 }
 	document.getElementById("labsorb").innerHTML = lAbs
-	document.getElementById("mabsorb").innerHTML = c.mAbsorb_flat
+	document.getElementById("mabsorb").innerHTML = character.mAbsorb_flat
 	
-	document.getElementById("cdr").innerHTML = c.cdr; if (c.cdr > 0) { document.getElementById("cdr").innerHTML += "%" }
-	var fcrTotal = c.fcr + Math.floor(c.level*c.fcr_per_level);
+	document.getElementById("cdr").innerHTML = character.cdr; if (character.cdr > 0) { document.getElementById("cdr").innerHTML += "%" }
+	var fcrTotal = character.fcr + Math.floor(character.level*character.fcr_per_level);
 	
-	var fcr_f = c.fcr_frames;
-	for (let i = 1; i < c.fcr_bp.length; i++) { if (fcrTotal >= c.fcr_bp[i]) { fcr_f -= 1 } }
+	var fcr_f = character.fcr_frames;
+	for (let i = 1; i < character.fcr_bp.length; i++) { if (fcrTotal >= character.fcr_bp[i]) { fcr_f -= 1 } }
 	
-	var fhr_f = c.fhr_frames;
-	for (let i = 1; i < c.fhr_bp.length; i++) { if (c.fhr >= c.fhr_bp[i]) { fhr_f -= 1 } }
-	if (c.class_name == "Paladin") { if (equipped.weapon.type == "spear" || equipped.weapon.type == "staff") {
-		fhr_f = c.fhr_frames_alt;
-		for (let i = 1; i < c.fhr_bp_alt.length; i++) { if (c.fhr >= c.fhr_bp_alt[i]) { fhr_f -= 1 } }
+	var fhr_f = character.fhr_frames;
+	for (let i = 1; i < character.fhr_bp.length; i++) { if (character.fhr >= character.fhr_bp[i]) { fhr_f -= 1 } }
+	if (character.class_name == "Paladin") { if (equipped.weapon.type == "spear" || equipped.weapon.type == "staff") {
+		fhr_f = character.fhr_frames_alt;
+		for (let i = 1; i < character.fhr_bp_alt.length; i++) { if (character.fhr >= character.fhr_bp_alt[i]) { fhr_f -= 1 } }
 	} }
-	if (c.class_name == "Druid") { if (equipped.weapon.twoHanded != 1 && (equipped.weapon.type == "axe" || equipped.weapon.type == "mace" || equipped.weapon.type == "sword" || equipped.weapon.type == "wand")) {	// TODO: Also include throwing axes?
-		fhr_f = c.fhr_frames_alt;
-		for (let i = 1; i < c.fhr_bp_alt.length; i++) { if (c.fhr >= c.fhr_bp_alt[i]) { fhr_f -= 1 } }
+	if (character.class_name == "Druid") { if (equipped.weapon.twoHanded != 1 && (equipped.weapon.type == "axe" || equipped.weapon.type == "mace" || equipped.weapon.type == "sword" || equipped.weapon.type == "wand")) {	// TODO: Also include throwing axes?
+		fhr_f = character.fhr_frames_alt;
+		for (let i = 1; i < character.fhr_bp_alt.length; i++) { if (character.fhr >= character.fhr_bp_alt[i]) { fhr_f -= 1 } }
 	} }
 	
-	var fbr_f = c.fbr_frames;
-	for (let i = 1; i < c.fbr_bp.length; i++) { if (c.fbr >= c.fbr_bp[i]) { fbr_f -= 1 } }
-	if (c.class_name == "Amazon") { if (equipped.weapon.twoHanded != 1 && (equipped.weapon.type == "axe" || equipped.weapon.type == "mace" || equipped.weapon.type == "sword" || equipped.weapon.type == "wand")) {	// TODO: Also include throwing axes?
-		fbr_f = c.fbr_frames_alt;
-		for (let i = 1; i < c.fbr_bp_alt.length; i++) { if (c.fbr >= c.fbr_bp_alt[i]) { fbr_f -= 1 } }
+	var fbr_f = character.fbr_frames;
+	for (let i = 1; i < character.fbr_bp.length; i++) { if (character.fbr >= character.fbr_bp[i]) { fbr_f -= 1 } }
+	if (character.class_name == "Amazon") { if (equipped.weapon.twoHanded != 1 && (equipped.weapon.type == "axe" || equipped.weapon.type == "mace" || equipped.weapon.type == "sword" || equipped.weapon.type == "wand")) {	// TODO: Also include throwing axes?
+		fbr_f = character.fbr_frames_alt;
+		for (let i = 1; i < character.fbr_bp_alt.length; i++) { if (character.fbr >= character.fbr_bp_alt[i]) { fbr_f -= 1 } }
 	} }
-	if (c.class_name == "Paladin") { if (effects["Holy_Shield"] != null) { if (typeof(effects["Holy_Shield"].info.enabled) != 'undefined') { if (effects["Holy_Shield"].info.enabled == 1) {
-		fbr_f = c.fbr_frames_alt;
-		for (let i = 1; i < c.fbr_bp_alt.length; i++) { if (c.fbr >= c.fbr_bp_alt[i]) { fbr_f -= 1 } }
+	if (character.class_name == "Paladin") { if (effects["Holy_Shield"] != null) { if (typeof(effects["Holy_Shield"].info.enabled) != 'undefined') { if (effects["Holy_Shield"].info.enabled == 1) {
+		fbr_f = character.fbr_frames_alt;
+		for (let i = 1; i < character.fbr_bp_alt.length; i++) { if (character.fbr >= character.fbr_bp_alt[i]) { fbr_f -= 1 } }
 	} } } }
 	
 	if (effects["Werebear"] != null) { if (typeof(effects["Werebear"].info.enabled) != 'undefined') { if (effects["Werebear"].info.enabled == 1) {
 		fcr_f = character_all.druid.fcr_frames_werebear
 		for (let i = 1; i < character_all.druid.fcr_bp_werebear.length; i++) { if (fcrTotal >= character_all.druid.fcr_bp_werebear[i]) { fcr_f -= 1 } }
 		fhr_f = character_all.druid.fhr_frames_werebear
-		for (let i = 1; i < character_all.druid.fhr_bp_werebear.length; i++) { if (c.fhr >= character_all.druid.fhr_bp_werebear[i]) { fhr_f -= 1 } }
+		for (let i = 1; i < character_all.druid.fhr_bp_werebear.length; i++) { if (character.fhr >= character_all.druid.fhr_bp_werebear[i]) { fhr_f -= 1 } }
 		fbr_f = character_all.druid.fbr_frames_werebear
-		for (let i = 1; i < character_all.druid.fbr_bp_werebear.length; i++) { if (c.fbr >= character_all.druid.fbr_bp_werebear[i]) { fbr_f -= 1 } }
+		for (let i = 1; i < character_all.druid.fbr_bp_werebear.length; i++) { if (character.fbr >= character_all.druid.fbr_bp_werebear[i]) { fbr_f -= 1 } }
 	} } }
 	if (effects["Werewolf"] != null) { if (typeof(effects["Werewolf"].info.enabled) != 'undefined') { if (effects["Werewolf"].info.enabled == 1) {
 		fcr_f = character_all.druid.fcr_frames_werewolf
 		for (let i = 1; i < character_all.druid.fcr_bp_werewolf.length; i++) { if (fcrTotal >= character_all.druid.fcr_bp_werewolf[i]) { fcr_f -= 1 } }
 		fhr_f = character_all.druid.fhr_frames_werewolf
-		for (let i = 1; i < character_all.druid.fhr_bp_werewolf.length; i++) { if (c.fhr >= character_all.druid.fhr_bp_werewolf[i]) { fhr_f -= 1 } }
+		for (let i = 1; i < character_all.druid.fhr_bp_werewolf.length; i++) { if (character.fhr >= character_all.druid.fhr_bp_werewolf[i]) { fhr_f -= 1 } }
 		fbr_f = character_all.druid.fbr_frames_werewolf
-		for (let i = 1; i < character_all.druid.fbr_bp_werewolf.length; i++) { if (c.fbr >= character_all.druid.fbr_bp_werewolf[i]) { fbr_f -= 1 } }
+		for (let i = 1; i < character_all.druid.fbr_bp_werewolf.length; i++) { if (character.fbr >= character_all.druid.fbr_bp_werewolf[i]) { fbr_f -= 1 } }
 	} } }
 	
 	document.getElementById("fcr").innerHTML = fcrTotal; if (fcrTotal > 0) { document.getElementById("fcr").innerHTML += "%" }
-	document.getElementById("fhr").innerHTML = c.fhr; if (c.fhr > 0) { document.getElementById("fhr").innerHTML += "%" }
-	document.getElementById("fbr").innerHTML = c.fbr; if (c.fbr > 0) { document.getElementById("fbr").innerHTML += "%" }
+	document.getElementById("fhr").innerHTML = character.fhr; if (character.fhr > 0) { document.getElementById("fhr").innerHTML += "%" }
+	document.getElementById("fbr").innerHTML = character.fbr; if (character.fbr > 0) { document.getElementById("fbr").innerHTML += "%" }
 	if (fcrTotal > 0 || equipped.weapon.name != "none" || equipped.offhand.name != "none") { document.getElementById("fcr").innerHTML += " ("+fcr_f+"f)" }
-	if (c.fhr > 0 || equipped.weapon.name != "none" || equipped.offhand.name != "none") { document.getElementById("fhr").innerHTML += " ("+fhr_f+"f)" }
-	if (c.fbr > 0 || c.block > 0 || c.block_skillup > 0) { document.getElementById("fbr").innerHTML += " ("+fbr_f+"f)" }
+	if (character.fhr > 0 || equipped.weapon.name != "none" || equipped.offhand.name != "none") { document.getElementById("fhr").innerHTML += " ("+fhr_f+"f)" }
+	if (character.fbr > 0 || character.block > 0 || character.block_skillup > 0) { document.getElementById("fbr").innerHTML += " ("+fbr_f+"f)" }
 	
 	// actual movespeed
 	var movespeed = 9;
-	var movement = (1 + (Math.floor(150*c.frw/(150+c.frw)) + c.frw_skillup + c.velocity)/100);
-	if (c.running > 0) { movespeed = round(9 * movement) } else { movespeed = round(6 * movement) }
+	var movement = (1 + (Math.floor(150*character.frw/(150+character.frw)) + character.frw_skillup + character.velocity)/100);
+	if (character.running > 0) { movespeed = round(9 * movement) } else { movespeed = round(6 * movement) }
 	document.getElementById("velocity").innerHTML = movespeed + " yds/s"
-	document.getElementById("frw").innerHTML = Math.floor(c.frw + c.frw_skillup); if (c.frw > 0 || c.frw_skillup > 0) { document.getElementById("frw").innerHTML += "%" }
+	document.getElementById("frw").innerHTML = Math.floor(character.frw + character.frw_skillup); if (character.frw > 0 || character.frw_skillup > 0) { document.getElementById("frw").innerHTML += "%" }
 	//document.getElementById("frw").innerHTML += " ("+movespeed+" yds/s)"
 	
-	document.getElementById("life_leech").innerHTML = c.life_leech; if (c.life_leech > 0) { document.getElementById("life_leech").innerHTML += "%" }
-	document.getElementById("mana_leech").innerHTML = c.mana_leech; if (c.mana_leech > 0) { document.getElementById("mana_leech").innerHTML += "%" }
-	var LPH = c.life_per_hit + "m , " + c.life_per_ranged_hit + "r";
+	document.getElementById("life_leech").innerHTML = character.life_leech; if (character.life_leech > 0) { document.getElementById("life_leech").innerHTML += "%" }
+	document.getElementById("mana_leech").innerHTML = character.mana_leech; if (character.mana_leech > 0) { document.getElementById("mana_leech").innerHTML += "%" }
+	var LPH = character.life_per_hit + "m , " + character.life_per_ranged_hit + "r";
 	if (LPH == "0m , 0r") { LPH = 0 }
 	document.getElementById("life_per_hit").innerHTML = LPH
-	var MPH = c.mana_per_hit + "m , " + c.mana_per_ranged_hit + "r";
+	var MPH = character.mana_per_hit + "m , " + character.mana_per_ranged_hit + "r";
 	if (MPH == "0m , 0r") { MPH = 0 }
 	document.getElementById("mana_per_hit").innerHTML = MPH
 	
-	document.getElementById("fdamage").innerHTML = c.fDamage; if (c.fDamage > 0) { document.getElementById("fdamage").innerHTML += "%" }
-	document.getElementById("cdamage").innerHTML = c.cDamage; if (c.cDamage > 0) { document.getElementById("cdamage").innerHTML += "%" }
-	document.getElementById("ldamage").innerHTML = c.lDamage; if (c.lDamage > 0) { document.getElementById("ldamage").innerHTML += "%" }
-	document.getElementById("pdamage").innerHTML = c.pDamage; if (c.pDamage > 0) { document.getElementById("pdamage").innerHTML += "%" }
-	document.getElementById("fpierce").innerHTML = c.fPierce; if (c.fPierce > 0) { document.getElementById("fpierce").innerHTML += "%" }
-	document.getElementById("cpierce").innerHTML = c.cPierce; if (c.cPierce > 0) { document.getElementById("cpierce").innerHTML += "%" }
-	document.getElementById("lpierce").innerHTML = c.lPierce; if (c.lPierce > 0) { document.getElementById("lpierce").innerHTML += "%" }
-	document.getElementById("ppierce").innerHTML = c.pPierce; if (c.pPierce > 0) { document.getElementById("ppierce").innerHTML += "%" }
+	document.getElementById("fdamage").innerHTML = character.fDamage; if (character.fDamage > 0) { document.getElementById("fdamage").innerHTML += "%" }
+	document.getElementById("cdamage").innerHTML = character.cDamage; if (character.cDamage > 0) { document.getElementById("cdamage").innerHTML += "%" }
+	document.getElementById("ldamage").innerHTML = character.lDamage; if (character.lDamage > 0) { document.getElementById("ldamage").innerHTML += "%" }
+	document.getElementById("pdamage").innerHTML = character.pDamage; if (character.pDamage > 0) { document.getElementById("pdamage").innerHTML += "%" }
+	document.getElementById("fpierce").innerHTML = character.fPierce; if (character.fPierce > 0) { document.getElementById("fpierce").innerHTML += "%" }
+	document.getElementById("cpierce").innerHTML = character.cPierce; if (character.cPierce > 0) { document.getElementById("cpierce").innerHTML += "%" }
+	document.getElementById("lpierce").innerHTML = character.lPierce; if (character.lPierce > 0) { document.getElementById("lpierce").innerHTML += "%" }
+	document.getElementById("ppierce").innerHTML = character.pPierce; if (character.pPierce > 0) { document.getElementById("ppierce").innerHTML += "%" }
 	
-	document.getElementById("pierce").innerHTML = c.pierce + c.pierce_skillup; if (c.pierce > 0 || c.pierce_skillup > 0) { document.getElementById("pierce").innerHTML += "%" }
-	document.getElementById("cblow").innerHTML = c.cblow; if (c.cblow > 0) { document.getElementById("cblow").innerHTML += "%" }
-	document.getElementById("dstrike").innerHTML = c.dstrike + Math.floor(c.level*c.dstrike_per_level); if (c.dstrike > 0 || c.dstrike_per_level > 0) { document.getElementById("dstrike").innerHTML += "%" }
-	document.getElementById("cstrike").innerHTML = c.cstrike + c.cstrike_skillup; if (c.cstrike > 0 || c.cstrike_skillup > 0) { document.getElementById("cstrike").innerHTML += "%" }
-	document.getElementById("owounds").innerHTML = c.owounds; if (c.owounds > 0) { document.getElementById("owounds").innerHTML += "%" }
+	document.getElementById("pierce").innerHTML = character.pierce + character.pierce_skillup; if (character.pierce > 0 || character.pierce_skillup > 0) { document.getElementById("pierce").innerHTML += "%" }
+	document.getElementById("cblow").innerHTML = character.cblow; if (character.cblow > 0) { document.getElementById("cblow").innerHTML += "%" }
+	document.getElementById("dstrike").innerHTML = character.dstrike + Math.floor(character.level*character.dstrike_per_level); if (character.dstrike > 0 || character.dstrike_per_level > 0) { document.getElementById("dstrike").innerHTML += "%" }
+	document.getElementById("cstrike").innerHTML = character.cstrike + character.cstrike_skillup; if (character.cstrike > 0 || character.cstrike_skillup > 0) { document.getElementById("cstrike").innerHTML += "%" }
+	document.getElementById("owounds").innerHTML = character.owounds; if (character.owounds > 0) { document.getElementById("owounds").innerHTML += "%" }
 	
-	var mf = Math.floor(c.mf + c.level*c.mf_per_level);
+	var mf = Math.floor(character.mf + character.level*character.mf_per_level);
 	var eMF = Math.floor(mf*250/(mf+250));
-	document.getElementById("mf").innerHTML = mf; if (c.mf != 0 || c.mf_per_level != 0) { document.getElementById("mf").innerHTML += "% ("+eMF+"%)" }
-	document.getElementById("gf").innerHTML = c.gf; if (c.gf != 0) { document.getElementById("gf").innerHTML += "%" }
+	document.getElementById("mf").innerHTML = mf; if (character.mf != 0 || character.mf_per_level != 0) { document.getElementById("mf").innerHTML += "% ("+eMF+"%)" }
+	document.getElementById("gf").innerHTML = character.gf; if (character.gf != 0) { document.getElementById("gf").innerHTML += "%" }
 	
-	document.getElementById("damage_vs_demons").innerHTML = c.damage_vs_demons; if (c.damage_vs_demons > 0) { document.getElementById("damage_vs_demons").innerHTML += "%" }
-	document.getElementById("damage_vs_undead").innerHTML = Math.floor(c.damage_vs_undead + c.level*c.damage_vs_undead_per_level); if (c.damage_vs_undead > 0 || c.damage_vs_undead_per_level > 0) { document.getElementById("damage_vs_undead").innerHTML += "%" }
-	document.getElementById("ar_vs_demons").innerHTML = c.ar_vs_demons
-	document.getElementById("ar_vs_undead").innerHTML = Math.floor(c.ar_vs_undead + c.level*c.ar_vs_undead_per_level)
+	document.getElementById("damage_vs_demons").innerHTML = character.damage_vs_demons; if (character.damage_vs_demons > 0) { document.getElementById("damage_vs_demons").innerHTML += "%" }
+	document.getElementById("damage_vs_undead").innerHTML = Math.floor(character.damage_vs_undead + character.level*character.damage_vs_undead_per_level); if (character.damage_vs_undead > 0 || character.damage_vs_undead_per_level > 0) { document.getElementById("damage_vs_undead").innerHTML += "%" }
+	document.getElementById("ar_vs_demons").innerHTML = character.ar_vs_demons
+	document.getElementById("ar_vs_undead").innerHTML = Math.floor(character.ar_vs_undead + character.level*character.ar_vs_undead_per_level)
 	
-	if (c.life_per_demon_kill > 0) { document.getElementById("life_per_kill").innerHTML = c.life_per_kill + " , " + c.life_per_demon_kill + " (demons)" } else { document.getElementById("life_per_kill").innerHTML = c.life_per_kill }
-	document.getElementById("mana_per_kill").innerHTML = c.mana_per_kill
+	if (character.life_per_demon_kill > 0) { document.getElementById("life_per_kill").innerHTML = character.life_per_kill + " , " + character.life_per_demon_kill + " (demons)" } else { document.getElementById("life_per_kill").innerHTML = character.life_per_kill }
+	document.getElementById("mana_per_kill").innerHTML = character.mana_per_kill
 	var lifeRegen = "";
-	if (c.life_regen > 0) { lifeRegen = c.life_regen+"% " }; if (c.life_replenish > 0) { lifeRegen += ("+"+c.life_replenish) }; if (c.life_regen == 0 && c.life_replenish == 0) { lifeRegen = 0 }
+	if (character.life_regen > 0) { lifeRegen = character.life_regen+"% " }; if (character.life_replenish > 0) { lifeRegen += ("+"+character.life_replenish) }; if (character.life_regen == 0 && character.life_replenish == 0) { lifeRegen = 0 }
 	document.getElementById("life_regen").innerHTML = lifeRegen
-	document.getElementById("mana_regen").innerHTML = Math.round(c.mana_regen,1)+"%"	// TODO: mana_regen should multiply base regen (1.66%) instead of being additive? Or is the 1.66 value meant to be 166%?
+	document.getElementById("mana_regen").innerHTML = Math.round(character.mana_regen,1)+"%"	// TODO: mana_regen should multiply base regen (1.66%) instead of being additive? Or is the 1.66 value meant to be 166%?
 	//var manaTotal = Math.floor((c.mana + c.level*c.mana_per_level + mana_addon) * (1 + c.max_mana/100));
 	//var manaRegeneratedPerSecond = 25 * Math.floor(Math.floor(256*manaTotal/(25*120)) * ((100+c.mana_regen)/100)) / 256;
 	
-	document.getElementById("damage_to_mana").innerHTML = c.damage_to_mana; if (c.damage_to_mana > 0) { document.getElementById("damage_to_mana").innerHTML += "%" }
+	document.getElementById("damage_to_mana").innerHTML = character.damage_to_mana; if (character.damage_to_mana > 0) { document.getElementById("damage_to_mana").innerHTML += "%" }
 	
-	document.getElementById("enemy_fres").innerHTML = c.enemy_fRes; if (c.enemy_fRes < 0) { document.getElementById("enemy_fres").innerHTML += "%" }
-	document.getElementById("enemy_cres").innerHTML = c.enemy_cRes; if (c.enemy_cRes < 0) { document.getElementById("enemy_cres").innerHTML += "%" }
-	document.getElementById("enemy_lres").innerHTML = c.enemy_lRes; if (c.enemy_lRes < 0) { document.getElementById("enemy_lres").innerHTML += "%" }
-	document.getElementById("enemy_pres").innerHTML = c.enemy_pRes; if (c.enemy_pRes < 0) { document.getElementById("enemy_pres").innerHTML += "%" }
+	document.getElementById("enemy_fres").innerHTML = character.enemy_fRes; if (character.enemy_fRes < 0) { document.getElementById("enemy_fres").innerHTML += "%" }
+	document.getElementById("enemy_cres").innerHTML = character.enemy_cRes; if (character.enemy_cRes < 0) { document.getElementById("enemy_cres").innerHTML += "%" }
+	document.getElementById("enemy_lres").innerHTML = character.enemy_lRes; if (character.enemy_lRes < 0) { document.getElementById("enemy_lres").innerHTML += "%" }
+	document.getElementById("enemy_pres").innerHTML = character.enemy_pRes; if (character.enemy_pRes < 0) { document.getElementById("enemy_pres").innerHTML += "%" }
 }
 
 // updateTertiaryStats - Updates other stats
 // ---------------------------------
 function updateTertiaryStats() {
-	var c = character;
-	var pLength = 0; if (c.difficulty == 2) { pLength = 40 }; if (c.difficulty == 3) { pLength = 100 };		// TODO: implement as character stat similar to resistance penalties?
-	var cLength = c.curse_length_reduced;	// TODO: implement curse_length_reduced as multiplicative rather than additive?
+	//var character = character;
+	var pLength = 0; if (character.difficulty == 2) { pLength = 40 }; if (character.difficulty == 3) { pLength = 100 };		// TODO: implement as character stat similar to resistance penalties?
+	var cLength = character.curse_length_reduced;	// TODO: implement curse_length_reduced as multiplicative rather than additive?
 	var cL_Cleansing = 0;
 	var cL_Fade = 0;
 	for (e in effects) {
@@ -4178,69 +4178,69 @@ function updateTertiaryStats() {
 		} }
 	}
 	if (cL_Cleansing > 0 && cL_Fade > 0) { cLength = 100 - Math.floor(100-cL_Cleansing - (100-cL_Cleansing)*(cL_Fade/100)) }
-	document.getElementById("poison_reduction").innerHTML = Math.min(75,c.poison_length_reduced-pLength); if (c.poison_length_reduced-pLength != 0) { document.getElementById("poison_reduction").innerHTML += "%" };
+	document.getElementById("poison_reduction").innerHTML = Math.min(75,character.poison_length_reduced-pLength); if (character.poison_length_reduced-pLength != 0) { document.getElementById("poison_reduction").innerHTML += "%" };
 	document.getElementById("curse_reduction").innerHTML = cLength; if (cLength > 0) { document.getElementById("curse_reduction").innerHTML += "%" };
-	var thorns = c.thorns_reflect;
-	if (c.thorns_reflect == 0) { thorns = Math.floor(c.thorns_lightning + c.thorns + c.level*c.thorns_per_level) } else { thorns += "%"; if (c.thorns > 0 || c.thorns_per_level > 0) { thorns += (" +"+Math.floor(c.thorns_lightning + c.thorns + c.level*c.thorns_per_level)) } }
+	var thorns = character.thorns_reflect;
+	if (character.thorns_reflect == 0) { thorns = Math.floor(character.thorns_lightning + character.thorns + character.level*character.thorns_per_level) } else { thorns += "%"; if (character.thorns > 0 || character.thorns_per_level > 0) { thorns += (" +"+Math.floor(character.thorns_lightning + character.thorns + character.level*character.thorns_per_level)) } }
 	document.getElementById("thorns").innerHTML = thorns
 	var lightRadius = "";
-	if (c.light_radius > 0) { lightRadius = "+"+c.light_radius + " to Light Radius<br>" } else if (c.light_radius < 0) { lightRadius = c.light_radius + " to Light Radius<br>" } else { lightRadius = "" }
+	if (character.light_radius > 0) { lightRadius = "+"+character.light_radius + " to Light Radius<br>" } else if (character.light_radius < 0) { lightRadius = character.light_radius + " to Light Radius<br>" } else { lightRadius = "" }
 	document.getElementById("light_radius").innerHTML = lightRadius
-	if (c.slower_stam_drain > 0) { document.getElementById("slower_stam_drain").innerHTML = "+"+c.slower_stam_drain+"% Slower Stamina Drain<br>" } else { document.getElementById("slower_stam_drain").innerHTML = "" }
-	if (c.heal_stam > 0 || c.heal_stam_per_level > 0) { document.getElementById("heal_stam").innerHTML = "Heal Stamina +" + Math.floor(c.heal_stam + c.level*c.heal_stam_per_level)+"%<br>" } else { document.getElementById("heal_stam").innerHTML = "" }
+	if (character.slower_stam_drain > 0) { document.getElementById("slower_stam_drain").innerHTML = "+"+character.slower_stam_drain+"% Slower Stamina Drain<br>" } else { document.getElementById("slower_stam_drain").innerHTML = "" }
+	if (character.heal_stam > 0 || character.heal_stam_per_level > 0) { document.getElementById("heal_stam").innerHTML = "Heal Stamina +" + Math.floor(character.heal_stam + character.level*character.heal_stam_per_level)+"%<br>" } else { document.getElementById("heal_stam").innerHTML = "" }
 	var enemyDef = "";
-	if (c.enemy_defense != 0 || c.target_defense != 0) { enemyDef += (Math.min(99,(c.enemy_defense + c.target_defense))+"%"); if (c.enemy_defense_flat != 0 || c.monster_defense_per_hit != 0) { enemyDef += ", " } }
-	if (c.enemy_defense_flat != 0) { enemyDef += c.enemy_defense_flat; if (c.monster_defense_per_hit != 0) { enemyDef += ", " } }
-	if (c.monster_defense_per_hit != 0) { enemyDef += (c.monster_defense_per_hit+" per hit") }
+	if (character.enemy_defense != 0 || character.target_defense != 0) { enemyDef += (Math.min(99,(character.enemy_defense + character.target_defense))+"%"); if (character.enemy_defense_flat != 0 || character.monster_defense_per_hit != 0) { enemyDef += ", " } }
+	if (character.enemy_defense_flat != 0) { enemyDef += character.enemy_defense_flat; if (character.monster_defense_per_hit != 0) { enemyDef += ", " } }
+	if (character.monster_defense_per_hit != 0) { enemyDef += (character.monster_defense_per_hit+" per hit") }
 	if (enemyDef == "") { enemyDef = "0"}
 	document.getElementById("enemy_defense").innerHTML = enemyDef
 	var enemyBlind = "";
-	if (c.blind_on_hit > 0) { enemyBlind = "Hit Blinds Target"; if (c.blind_on_hit > 1) { enemyBlind += (" +"+c.blind_on_hit+"<br>"); } else { enemyBlind += "<br>" } }
+	if (character.blind_on_hit > 0) { enemyBlind = "Hit Blinds Target"; if (character.blind_on_hit > 1) { enemyBlind += (" +"+character.blind_on_hit+"<br>"); } else { enemyBlind += "<br>" } }
 	document.getElementById("blind_on_hit").innerHTML = enemyBlind
-	if (c.flee_on_hit > 0) { document.getElementById("flee_on_hit").innerHTML = "Hit Causes Monster to Flee " + Math.min(100,c.flee_on_hit) + "%<br>" } else { document.getElementById("flee_on_hit").innerHTML = "" }
-	if (c.discount > 0) { document.getElementById("discount").innerHTML = "Vendor Prices Reduced by " + c.discount + "%<br>" } else { document.getElementById("discount").innerHTML = "" }
+	if (character.flee_on_hit > 0) { document.getElementById("flee_on_hit").innerHTML = "Hit Causes Monster to Flee " + Math.min(100,character.flee_on_hit) + "%<br>" } else { document.getElementById("flee_on_hit").innerHTML = "" }
+	if (character.discount > 0) { document.getElementById("discount").innerHTML = "Vendor Prices Reduced by " + character.discount + "%<br>" } else { document.getElementById("discount").innerHTML = "" }
 	
-	if (c.itd > 0) { document.getElementById("itd").innerHTML = "Ignore Target Defense<br>" } else { document.getElementById("itd").innerHTML = "" }
-	if (c.pmh > 0) { document.getElementById("pmh").innerHTML = "Prevent Monster Heal<br>" } else { document.getElementById("pmh").innerHTML = "" }
-	if (c.cbf > 0) { document.getElementById("cbf").innerHTML = "Cannot Be Frozen<br>" }
-	else if (c.half_freeze > 0) { document.getElementById("cbf").innerHTML = "Half Freeze Duration<br>" }
+	if (character.itd > 0) { document.getElementById("itd").innerHTML = "Ignore Target Defense<br>" } else { document.getElementById("itd").innerHTML = "" }
+	if (character.pmh > 0) { document.getElementById("pmh").innerHTML = "Prevent Monster Heal<br>" } else { document.getElementById("pmh").innerHTML = "" }
+	if (character.cbf > 0) { document.getElementById("cbf").innerHTML = "Cannot Be Frozen<br>" }
+	else if (character.half_freeze > 0) { document.getElementById("cbf").innerHTML = "Half Freeze Duration<br>" }
 	else { document.getElementById("cbf").innerHTML = "" }
-	if (c.knockback > 0) { document.getElementById("knockback").innerHTML = "Knockback<br>" } else { document.getElementById("knockback").innerHTML = "" }
-	if (c.melee_splash > 0) { document.getElementById("melee_splash").innerHTML = "Melee Attacks deal Splash Damage<br>" } else { document.getElementById("melee_splash").innerHTML = "" }
-	if (c.slows_target > 0 || c.slow_enemies > 0) { document.getElementById("slow_target").innerHTML = "Targets Slowed " + (c.slows_target + c.slow_enemies)+"%<br>" } else { document.getElementById("slow_target").innerHTML = "" }
-	if (c.freezes_target > 1) { document.getElementById("freezes_target").innerHTML = "Freezes Target +" + c.freezes_target + "<br>" }
-	else if (c.freezes_target > 0) { document.getElementById("freezes_target").innerHTML = "Freezes Target<br>" }
+	if (character.knockback > 0) { document.getElementById("knockback").innerHTML = "Knockback<br>" } else { document.getElementById("knockback").innerHTML = "" }
+	if (character.melee_splash > 0) { document.getElementById("melee_splash").innerHTML = "Melee Attacks deal Splash Damage<br>" } else { document.getElementById("melee_splash").innerHTML = "" }
+	if (character.slows_target > 0 || character.slow_enemies > 0) { document.getElementById("slow_target").innerHTML = "Targets Slowed " + (character.slows_target + character.slow_enemies)+"%<br>" } else { document.getElementById("slow_target").innerHTML = "" }
+	if (character.freezes_target > 1) { document.getElementById("freezes_target").innerHTML = "Freezes Target +" + character.freezes_target + "<br>" }
+	else if (character.freezes_target > 0) { document.getElementById("freezes_target").innerHTML = "Freezes Target<br>" }
 	else { document.getElementById("freezes_target").innerHTML = "" }
-	if (c.peace > 0) { document.getElementById("peace").innerHTML = "Slain Monsters Rest in Peace<br>" } else { document.getElementById("peace").innerHTML = "" }
-	if (c.glow > 0) { document.getElementById("glow").innerHTML = "Character is Glowing<br>" } else { document.getElementById("glow").innerHTML = "" }
+	if (character.peace > 0) { document.getElementById("peace").innerHTML = "Slain Monsters Rest in Peace<br>" } else { document.getElementById("peace").innerHTML = "" }
+	if (character.glow > 0) { document.getElementById("glow").innerHTML = "Character is Glowing<br>" } else { document.getElementById("glow").innerHTML = "" }
 	var statlines = "";
-	if (c.fade > 0) { statlines += "Character is Faded<br>" }
-	if (c.all_skills_ember > 0) { statlines += "+"+c.all_skills_ember+" to All Skills when 5 Ember Charges are active<br>" }
-	if (c.bonus_sanctuary_rate > 0) { statlines += "+"+c.bonus_sanctuary_rate+"% Increased Sanctuary Area Damage Rate<br>" }
-	if (c.summon_damage > 0) { statlines += "Summons deal +"+c.summon_damage+"% Increased Damage<br>" }
-	if (c.summon_defense > 0) { statlines += "Summons have +"+c.summon_defense+"% Enhanced Defense<br>" }
-	if (c.bonus_corpse_explosion > 0) { statlines += "Corpse Explosion deals +"+c.bonus_corpse_explosion+"% of Maximum Corpse life<br>" }
-	if (c.phys_Lightning_Surge > 0) { statlines += "Lightning Surge Deals "+c.phys_Lightning_Surge+"% Extra Damage As Physical<br>" }
-	if (c.extraValkyrie > 0) { statlines += "Can Summon One Additional Valkyrie<br>" }
-	if (c.extraGrizzly > 0) { statlines += "Can Summon One Additional Grizzly Bear<br>" }
-	if (c.extraFireGolem > 0) { statlines += "Can Summon One Additional Fire Golem<br>" }
-	if (c.extraHydra > 0) { statlines += "Can Summon One Additional Hydra<br>" }
-	if (c.radius_FreezingArrow > 0) { statlines += "+"+c.radius_FreezingArrow+"% to Freezing Arrow Radius<br>" }
-	if (c.explosive_attack > 0) { statlines += "Fires Explosive Arrows or Bolts<br>" }
-	if (c.magic_attack > 0) { statlines += "Fires Magic Arrows<br>" }
-	if (c.reset_cooldown_on_kill > 0) { statlines += c.reset_cooldown_on_kill+"% Chance to Reset Skill Cooldown on Kill<br>" }
-	if (c.cdr_on_striking > 0) { statlines += "Gain "+c.cdr_on_striking+"% Reduced Skill Cooldown For 4 Seconds On Striking<br>" }
-	if (c.reanimate > 0) { statlines += c.reanimate+"% Reanimate As: Returned<br>" }
-	if (c.half_Battle_Orders > 0 && c.class_name != "Barbarian") { statlines += "Battle Order's life and mana bonuses are halved<br>" }
-	if (c.extra_Bone_Spears > 0) { statlines += "Bone Spear fires "+c.extra_Bone_Spears+" Additional Projectiles<br>" }
-	if (c.extra_conversion_Magic_Arrow > 0) { statlines += "+"+c.extra_conversion_Magic_Arrow+"% Magic Arrow Damage Converted to Magic<br>" }
-	if (c.extra_arrows_Ice_Arrow > 0) { statlines += "Ice Arrow fires "+c.extra_arrows_Ice_Arrow+" Additional Arrows<br>" }
-	if (c.extra_arrows_Cold_Arrow > 0) { statlines += "Cold Arrow fires "+c.extra_arrows_Cold_Arrow+" Additional Projectiles<br>" }
-	if (c.extra_arrows_Magic_Arrow > 0) { statlines += "Magic Arrow fires "+c.extra_arrows_Magic_Arrow+" Additional Arrows<br>" }
-	if (c.extra_arrows_Fire_Arrow > 0) { statlines += "Fire Arrow fires "+c.extra_arrows_Fire_Arrow+" Additional Arrows<br>" }
-	if (c.experience > 0) { statlines += "+"+c.experience+"% Experience Gained<br>" }
-	if (c.ctc_temp1 > 0) { statlines += "10% chance to cast level 15 Nova on striking<br>" }
-	if (c.ctc_temp2 > 0) { statlines += "25% chance to cast level 5 Static Field when struck<br>" }
+	if (character.fade > 0) { statlines += "Character is Faded<br>" }
+	if (character.all_skills_ember > 0) { statlines += "+"+character.all_skills_ember+" to All Skills when 5 Ember Charges are active<br>" }
+	if (character.bonus_sanctuary_rate > 0) { statlines += "+"+character.bonus_sanctuary_rate+"% Increased Sanctuary Area Damage Rate<br>" }
+	if (character.summon_damage > 0) { statlines += "Summons deal +"+character.summon_damage+"% Increased Damage<br>" }
+	if (character.summon_defense > 0) { statlines += "Summons have +"+character.summon_defense+"% Enhanced Defense<br>" }
+	if (character.bonus_corpse_explosion > 0) { statlines += "Corpse Explosion deals +"+character.bonus_corpse_explosion+"% of Maximum Corpse life<br>" }
+	if (character.phys_Lightning_Surge > 0) { statlines += "Lightning Surge Deals "+character.phys_Lightning_Surge+"% Extra Damage As Physical<br>" }
+	if (character.extraValkyrie > 0) { statlines += "Can Summon One Additional Valkyrie<br>" }
+	if (character.extraGrizzly > 0) { statlines += "Can Summon One Additional Grizzly Bear<br>" }
+	if (character.extraFireGolem > 0) { statlines += "Can Summon One Additional Fire Golem<br>" }
+	if (character.extraHydra > 0) { statlines += "Can Summon One Additional Hydra<br>" }
+	if (character.radius_FreezingArrow > 0) { statlines += "+"+character.radius_FreezingArrow+"% to Freezing Arrow Radius<br>" }
+	if (character.explosive_attack > 0) { statlines += "Fires Explosive Arrows or Bolts<br>" }
+	if (character.magic_attack > 0) { statlines += "Fires Magic Arrows<br>" }
+	if (character.reset_cooldown_on_kill > 0) { statlines += character.reset_cooldown_on_kill+"% Chance to Reset Skill Cooldown on Kill<br>" }
+	if (character.cdr_on_striking > 0) { statlines += "Gain "+character.cdr_on_striking+"% Reduced Skill Cooldown For 4 Seconds On Striking<br>" }
+	if (character.reanimate > 0) { statlines += character.reanimate+"% Reanimate As: Returned<br>" }
+	if (character.half_Battle_Orders > 0 && character.class_name != "Barbarian") { statlines += "Battle Order's life and mana bonuses are halved<br>" }
+	if (character.extra_Bone_Spears > 0) { statlines += "Bone Spear fires "+character.extra_Bone_Spears+" Additional Projectiles<br>" }
+	if (character.extra_conversion_Magic_Arrow > 0) { statlines += "+"+character.extra_conversion_Magic_Arrow+"% Magic Arrow Damage Converted to Magic<br>" }
+	if (character.extra_arrows_Ice_Arrow > 0) { statlines += "Ice Arrow fires "+character.extra_arrows_Ice_Arrow+" Additional Arrows<br>" }
+	if (character.extra_arrows_Cold_Arrow > 0) { statlines += "Cold Arrow fires "+character.extra_arrows_Cold_Arrow+" Additional Projectiles<br>" }
+	if (character.extra_arrows_Magic_Arrow > 0) { statlines += "Magic Arrow fires "+character.extra_arrows_Magic_Arrow+" Additional Arrows<br>" }
+	if (character.extra_arrows_Fire_Arrow > 0) { statlines += "Fire Arrow fires "+character.extra_arrows_Fire_Arrow+" Additional Arrows<br>" }
+	if (character.experience > 0) { statlines += "+"+character.experience+"% Experience Gained<br>" }
+	if (character.ctc_temp1 > 0) { statlines += "10% chance to cast level 15 Nova on striking<br>" }
+	if (character.ctc_temp2 > 0) { statlines += "25% chance to cast level 5 Static Field when struck<br>" }
 	document.getElementById("statlines").innerHTML = statlines
 	updateCTC()
 	updateChargeSkills()
@@ -4298,20 +4298,20 @@ function updateChargeSkills() {
 // updateOther - Updates other interface elements
 // ---------------------------------
 function updateOther() {
-	var c = character;
-	if (c.statpoints == 0) {
+	//var character = character;
+	if (character.statpoints == 0) {
 		document.getElementById("remainingstats").innerHTML = ""
 		document.getElementById("hide_statpoints").style.visibility = "visible"
 	} else {
 		document.getElementById("hide_statpoints").style.visibility = "hidden"
 	}
-	if (c.skillpoints == 0) {
+	if (character.skillpoints == 0) {
 		document.getElementById("remainingskills").innerHTML = ""
 		document.getElementById("hide_skillpoints").style.visibility = "visible"
 	} else {
 		document.getElementById("hide_skillpoints").style.visibility = "hidden"
 	}
-	if (c.level == 1 && c.statpoints == 0 && c.quests_completed < 0) {
+	if (character.level == 1 && character.statpoints == 0 && character.quests_completed < 0) {
 		document.getElementById("hide_stats").style.visibility = "visible"
 	} else {
 		document.getElementById("hide_stats").style.visibility = "hidden"
