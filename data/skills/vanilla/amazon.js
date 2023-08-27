@@ -2,13 +2,55 @@
 // TODO: update data for levels 1-60
 // TODO: review stats & frame info
 
-var character_amazon_vanilla = {class_name:"Amazon", strength:20, dexterity:25, vitality:20, energy:15, life:50, mana:15, stamina:184, levelup_life:2.5, levelup_stamina:1, levelup_mana:1.5, ar_per_dexterity:5, life_per_vitality:3, stamina_per_vitality:1, mana_per_energy:1.5, starting_strength:20, starting_dexterity:25, starting_vitality:20, starting_energy:15, ar_const:10, block_const:3, skill_layout:"./images/skill_trees/vanilla/amazon.png", mana_regen:1.66,
-	weapon_frames:{dagger:12, sword:[13,17], axe:[13,17], mace:[13,17], thrown:[13,12], staff:17, polearm:17, scepter:13, wand:13, javelin:12, spear:17, bow:13, crossbow:19},
+var character_amazon_vanilla = {
+	ar_const:10, 
+	ar_per_dexterity:5, 
+	block_const:3, 
+	class_name:"Amazon",
+	dexterity:25, 
+	energy:15, 
+	levelup_life:2.5, 
+	levelup_mana:1.5, 
+	levelup_stamina:1, 
+	life:50, 
+	life_per_vitality:3, 
+	mana:15, 
+	mana_per_energy:1.5, 
+	mana_regen:1.66,
+	skill_layout:"./images/skill_trees/vanilla/amazon.png", 
+	stamina:184, 
+	stamina_per_vitality:1, 
+	starting_dexterity:25, 
+	starting_energy:15, 
+	starting_strength:20, 
+	starting_vitality:20, 
+	strength:20, 
+	vitality:20, 
+	
+	weapon_frames:{
+		dagger:12, 
+		sword:[13,17], 
+		axe:[13,17], 
+		mace:[13,17], 
+		thrown:[13,12], 
+		staff:17, 
+		polearm:17, 
+		scepter:13, 
+		wand:13, 
+		javelin:12, 
+		spear:17, 
+		bow:13, 
+		crossbow:19
+		},
 	// Skills that may adjust IAS breakpoints: Jab, Fend, Strafe
-	fcr_frames:19, fcr_bp:[0, 7, 14, 22, 32, 48, 68, 99, 152],
-	fhr_frames:11, fhr_bp:[0, 6, 13, 20, 32, 52, 86, 174, 600],
-	fbr_frames:5, fbr_bp:[0, 13, 32, 86, 600],
-	fbr_frames_alt:17, fbr_bp_alt:[0, 4, 6, 11, 15, 23, 29, 40, 56, 80, 120, 200, 480],	// 1-hand swinging weapons (axes, maces, swords, throwing axes, wands)
+	fcr_frames:19,
+	fcr_bp:[0, 7, 14, 22, 32, 48, 68, 99, 152],
+	fhr_frames:11,
+	fhr_bp:[0, 6, 13, 20, 32, 52, 86, 174, 600],
+	fbr_frames:5,
+	fbr_bp:[0, 13, 32, 86, 600],
+	fbr_frames_alt:17,
+	fbr_bp_alt:[0, 4, 6, 11, 15, 23, 29, 40, 56, 80, 120, 200, 480],	// 1-hand swinging weapons (axes, maces, swords, throwing axes, wands)
 	
 	// getSkillData - gets skill info from the skills data table
 	//	skill: skill object for the skill in question
